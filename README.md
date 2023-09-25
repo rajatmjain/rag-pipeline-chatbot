@@ -30,4 +30,3 @@ Options:
 
 1. Rajat Jain [![GitHub](https://img.shields.io/badge/GitHub-rajatmjain-blue?logo=github)](https://github.com/rajatmjain)
 2. Roshawn Brooks [![GitHub](https://img.shields.io/badge/GitHub-rbrooks95-blue?logo=github)](https://github.com/rbrooks95)
-3. Ugo Onyeka [![GitHub](https://img.shields.io/badge/GitHub-YourGitHubID-blue?logo=github)](https://github.com/YourGitHubID)
