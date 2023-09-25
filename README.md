@@ -1,24 +1,16 @@
 # Hacktoberfest 2023 project: building ETL and RAG pipelines with open source
 
-## Set up
-
-There should be one GitHub repository per team.
-
-**Ensure all team members have completed all steps in the [set up](setup.md) document.**
-
 ## Theme of your project
 
-1. Retrieval Augmented Generation (RAG) pipeline for chatbot / Pipeline de Generación Aumentada por Recuperación (RAG) para chatbot
+1. Retrieval Augmented Generation (RAG) pipeline for chatbot
 
 ## Description
 
 Provide a description of your project. Include the data sources you are using, the tools you are using, and the expected outcome of your project.
 
-## Data sources / Fuentes de datos
+## Data sources
 
 Provide a detailed description of your data sources. Please ensure you work only with open source data. Include a link to the data you are working with.
-
-**Do not upload data to GitHub**
 
 ## Methods
 
