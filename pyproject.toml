@@ -19,6 +19,7 @@ openai = "^0.28.0"
 ipywidgets = "^8.1.1"
 chainlit = "^0.7.0"
 pandas = "2.0.3"
+yfinance = "^0.2.30"
 
 
 [build-system]
