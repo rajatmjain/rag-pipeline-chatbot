@@ -11,10 +11,8 @@ goldData = yf.Ticker(tickerSymbol)
 historicalData = goldData.history(period="max")
 df = pd.DataFrame(historicalData)
 
+# Data cleaning
+df = df.drop(columns=["Dividends","Stock Splits"])
+
 # Save data
 df.to_csv("data/historicPrices.csv")
-
-
-
-
-
