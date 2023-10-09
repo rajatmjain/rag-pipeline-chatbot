@@ -20,6 +20,7 @@ ipywidgets = "^8.1.1"
 chainlit = "^0.7.0"
 pandas = "2.0.3"
 yfinance = "^0.2.30"
+matplotlib = "^3.8.0"
 
 
 [build-system]
