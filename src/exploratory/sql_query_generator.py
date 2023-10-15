@@ -11,12 +11,12 @@ class SQLQueryGenerator():
         self.hfModelName = os.getenv("HF_MODEL_NAME")
 
 
-    def generateSQL(self,query:str):
+    def generateSQL(self,query:str) -> str:
 
         columns = self.getTableColumns()
 
-        sqlPrompt = PromptTemplate(prompt="""Please generate an SQL query. The query should answer the following Query: {query};
-                                                              The query is to be answered for the table is called 'historic_prices' with the following
+        sqlPrompt = PromptTemplate(prompt="""Please generate and return only an SQL query. The query should answer the following Query: {query};
+                                                              The query is to be answered for the table is called 'gold_prices' with the following
                                                               Columns: {columns} ;
                                                               Answer:""",
                             )
@@ -25,14 +25,14 @@ class SQLQueryGenerator():
 
         output = promptNode.prompt(prompt_template=sqlPrompt,query=query,columns=columns)
 
-        return output[0]
+        return output[0].strip()
     
-    def getTableColumns(self):
+    def getTableColumns(self) -> str:
         # Connect to the SQLite database
-        conn = sqlite3.connect('data/historic_prices.db')
+        conn = sqlite3.connect('data/database.db')
 
         # Use Pandas to read the table into a DataFrame
-        df = pd.read_sql_query(f"SELECT * FROM historic_prices LIMIT 1", conn)
+        df = pd.read_sql_query(f"SELECT * FROM gold_prices LIMIT 1", conn)
 
         # Get column names as a comma-separated string
         columnNames = ','.join(df.columns)
@@ -41,3 +41,4 @@ class SQLQueryGenerator():
         conn.close()
 
         return columnNames
+
