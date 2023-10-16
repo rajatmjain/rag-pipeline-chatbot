@@ -3,49 +3,57 @@ import yfinance as yf
 import pandas as pd
 import sqlite3
 
-# Define the ticker symbol for Gold Futures
-tickerSymbol = "GC=F"
+def connectToDatabase(databasePath):
+    return sqlite3.connect(databasePath)
 
-# Connect to the SQLite database
-conn = sqlite3.connect("data/historic_prices.db")
+def createYFinanceObject(tickerSymbol):
+    return yf.Ticker(tickerSymbol)
 
-# Create a yfinance object for the Gold ticker symbol
-goldData = yf.Ticker(tickerSymbol)
+def extractData(yFinanceObject, databaseConnection):
+    tableNameQuery = "SELECT name FROM sqlite_master WHERE type='table';"
+    tableExists = "historic_prices" in pd.read_sql_query(tableNameQuery, databaseConnection)["name"].values
 
-# Data Extraction
-if "historic_prices" not in pd.read_sql_query("SELECT name FROM sqlite_master WHERE type='table';", conn)["name"].values:
-    # Get all historic data
-    historicData = goldData.history(period="max")
-    historicData.to_csv("data/temp.csv")
+    if not tableExists:
+        # If the table doesn't exist, get all historic data
+        historicData = yFinanceObject.history(period="max")
+        historicData.to_csv("data/temp.csv")
+    else:
+        # Get the last date in the existing data
+        lastDateQuery = "SELECT MAX(Date) FROM historic_prices"
+        lastDateStr = pd.read_sql_query(lastDateQuery, databaseConnection)["MAX(Date)"][0]
+        lastDate = pd.to_datetime(lastDateStr)
+
+        # Calculate the date for the offset (e.g., 1 day)
+        offsetDate = lastDate + pd.DateOffset(days=1)
+
+        # Convert the offset date back to a string
+        offsetDateStr = offsetDate.strftime('%Y-%m-%d')
+
+        # Get new data starting from the offset date
+        newData = yFinanceObject.history(start=offsetDateStr)
+        newData.to_csv("data/temp.csv")
+
+def cleanDataAndSaveToDb(databaseConnection):
     df = pd.read_csv("data/temp.csv")
-  
-else:
-    # Get the last date in the existing data
-    query = "SELECT MAX(Date) FROM historic_prices"
-    lastDateStr = pd.read_sql_query(query, conn)["MAX(Date)"][0][:10]
-    lastDate = pd.to_datetime(lastDateStr)
-    
-    # Calculate the date for the offset (e.g., 1 day)
-    offsetDate = lastDate + pd.DateOffset(days=1)
-    
-    # Convert the offset date back to a string
-    offsetDateStr = offsetDate.strftime('%Y-%m-%d')
-    
-    # Get new data starting from the offset date
-    newData = goldData.history(start=offsetDateStr)
+    df = df.drop(columns=["Dividends", "Stock Splits"])
+    df.to_sql("historic_prices", databaseConnection, if_exists="append", index=False)
 
-    newData.to_csv("data/temp.csv")
-    df = pd.read_csv("data/temp.csv")
+def closeDatabaseConnection(databaseConnection):
+    databaseConnection.close()
 
-    
-# Data cleaning
-df = df.drop(columns=["Dividends", "Stock Splits"])
+def deleteTempFile():
+    os.remove("data/temp.csv")
 
-# Save the DataFrame to the SQLite database
-df.to_sql("historic_prices", conn, if_exists="append", index=False)
+def main():
+    databasePath = "data/historic_prices.db"
+    tickerSymbol = "GC=F"
+    conn = connectToDatabase(databasePath)
+    yFinanceObject = createYFinanceObject(tickerSymbol)
 
-# Close the database connection
-conn.close()
+    extractData(yFinanceObject, conn)
+    cleanDataAndSaveToDb(conn)
+    closeDatabaseConnection(conn)
+    deleteTempFile()
 
-# Delete Temp file
-os.remove("data/temp.csv")
+if __name__ == "__main__":
+    main()
