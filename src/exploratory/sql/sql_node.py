@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 import sqlite3
-from sql_query_generator import SQLQueryGenerator
 from haystack.nodes import PromptNode,PromptTemplate,AnswerParser
 from haystack.document_stores import SQLDocumentStore
 from haystack.pipelines import Pipeline
@@ -31,10 +30,12 @@ class SQLNode:
     def pipeline(self):
         # Prompt Template
         promptTemplate = PromptTemplate(prompt = 
-                                """" You are a bot named GoldBot who helps people understand the commodity Gold. You share gold insights and investment strategies. Strictly answer the following query based on the provided data from the table and nothing else. If the context does
-                                                not include an answer, reply with 'The data does not contain information related to the question'.\n
-                                                Query: {query}\n
-                                                Answer: 
+                               """" You are an assistant getting data of prices of gold from documents. The table has the columns Date,Open,High,Low,Close,Volume. The dates are in the format "%Y-%m-%d" example: October 9 2023 is 2023-10-09.
+                                Strictly answer the following query briefly based on the provided data from the documents and nothing else.
+                                If the context does not include an answer, reply with 'The data does not contain information related to the question'.\n
+                                Query: {query}\n
+                                Documents: {documents}\n
+                                Answer: 
                                 """,
                                 output_parser=AnswerParser())
 
@@ -48,13 +49,3 @@ class SQLNode:
         sqlPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Query"])
 
         return sqlPipeline
-    
-
-sqlPipeline = SQLNode().pipeline()
-sqlDocumentStore = SQLNode().documentStore()
-
-output = sqlPipeline.run(query="What can you say about gold prices in 2023",documents=sqlDocumentStore.get_all_documents())
-answer = output["answers"][0].answer
-print(answer)
-
-    
