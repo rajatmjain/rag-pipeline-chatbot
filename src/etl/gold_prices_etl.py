@@ -2,6 +2,7 @@ import os
 import yfinance as yf
 import pandas as pd
 import sqlite3
+from dateutil import parser
 
 def connectToDatabase(databasePath):
     return sqlite3.connect(databasePath)
@@ -36,7 +37,9 @@ def extractData(yFinanceObject, databaseConnection):
 def cleanDataAndSaveToDb(databaseConnection):
     df = pd.read_csv("data/temp.csv")
     df = df.drop(columns=["Dividends", "Stock Splits"])
+    df['Date'] = df['Date'].apply(lambda x: parser.parse(x).strftime('%Y-%m-%d'))
     df.to_sql("gold_prices", databaseConnection, if_exists="append", index=False)
+
 
 def closeDatabaseConnection(databaseConnection):
     databaseConnection.close()

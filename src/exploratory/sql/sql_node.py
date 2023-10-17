@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import sqlite3
-from src.exploratory.sql.sql_query_generator import SQLQueryGenerator
+from sql_query_generator import SQLQueryGenerator
 from haystack.nodes import PromptNode,PromptTemplate,AnswerParser
 from haystack.document_stores import SQLDocumentStore
 from haystack.pipelines import Pipeline

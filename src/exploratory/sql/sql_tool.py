@@ -1,5 +1,5 @@
 from haystack.agents import Tool
-from src.exploratory.sql.sql_node import SQLNode
+from sql_node import SQLNode
 
 class SQLTool():
     def __init__(self) -> None:
