@@ -1,14 +1,15 @@
 from haystack.agents import Tool
 from sql_node import SQLNode
+from sql import SQL
 
 class SQLTool():
     def __init__(self) -> None:
         pass
 
     def tool():
-        sqlNode = SQLNode()
-        sqlDocumentStore = sqlNode.documentStore()
-        sqlPipeline = sqlNode.pipeline()
+        sql = SQL()
+        sqlDocumentStore = SQLNode().documentStore()
+        sqlPipeline = sql.pipeline()
         sqlTool = Tool(
             name="SQLTool",
             description="Tool to get insights from gold prices data",
