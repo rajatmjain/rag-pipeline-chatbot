@@ -1,10 +1,10 @@
-from sql_node import SQLNode
+from prices_node import PricesNode
 from haystack.pipelines import Pipeline
 
-class SQL:
+class Prices:
 
     def __init__(self) -> None:
         pass
 
     def pipeline(self) -> Pipeline:
-        return SQLNode().pipeline()
+        return PricesNode().pipeline()

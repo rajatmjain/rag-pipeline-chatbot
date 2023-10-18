@@ -13,11 +13,11 @@ class NewsNode():
         self.hfAPIKey = os.getenv("HF_API_KEY")
         self.hfModelName = os.getenv("HF_MODEL_NAME") 
       
-    def documentStore(self):
+    def documentStore(self) -> FAISSDocumentStore:
         return FAISSDocumentStore.load(index_path="data/faiss/faiss_index")
 
       
-    def retriever(self,documentStore):
+    def retriever(self,documentStore) -> DensePassageRetriever:
         retriever = DensePassageRetriever(
                         document_store=documentStore,
                         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
@@ -28,11 +28,11 @@ class NewsNode():
 
         documentStore.update_embeddings(retriever)
 
-        documentStore.save("../../../data/faiss/faiss_index")
+        documentStore.save("data/faiss/faiss_index")
 
         return retriever
     
-    def promptNode(self):
+    def promptNode(self) -> PromptNode:
         promptTemplate = PromptTemplate(
         prompt="""" You are an assistant getting latest news on the commodity of gold from documents.
                                 Strictly answer the following query briefly based on the provided news from the documents and nothing else.
@@ -49,12 +49,18 @@ class NewsNode():
 
         return promptNode
     
-    def pipeline(promptNode,retriever):
+    def pipeline(self) -> Pipeline:
         # Pipeline
         pipeline = Pipeline()
-        pipeline.add_node(component=retriever, name="retriever", inputs=["Query"])
-        pipeline.add_node(component=promptNode, name="promptNode", inputs=["retriever"])  
+        pipeline.add_node(component=self.retriever(self.documentStore()), name="retriever", inputs=["Query"])
+        pipeline.add_node(component=self.promptNode(), name="promptNode", inputs=["retriever"])  
 
         return pipeline
 
-    
+
+news = NewsNode()
+newsDocumentStore = news.documentStore()
+newsPipeline = news.pipeline()
+output = newsPipeline.run(query="Summarize the news for me",documents=newsDocumentStore.get_all_documents())
+answer = output["answers"][0].answer
+print(answer)   

@@ -6,13 +6,13 @@ from haystack.document_stores import SQLDocumentStore
 from haystack.pipelines import Pipeline
 from haystack import Document
 
-class SQLNode:
+class PricesNode:
 
     def __init__(self) -> None:
         self.hfAPIKey = os.getenv("HF_API_KEY")
         self.hfModelName = os.getenv("HF_MODEL_NAME")
 
-    def documentStore(self):
+    def documentStore(self) -> SQLDocumentStore:
         documentStore = SQLDocumentStore(url="sqlite:///data/database.db")
         conn = sqlite3.connect("data/database.db")
         df = pd.read_sql_query("SELECT * from gold_prices",conn)
@@ -27,7 +27,7 @@ class SQLNode:
 
         return documentStore
     
-    def pipeline(self):
+    def pipeline(self) -> Pipeline:
         # Prompt Template
         promptTemplate = PromptTemplate(prompt = 
                                """" You are an assistant getting data of prices of gold from documents. The table has the columns Date,Open,High,Low,Close,Volume. The dates are in the format "%Y-%m-%d" example: October 9 2023 is 2023-10-09.
@@ -43,9 +43,16 @@ class SQLNode:
         promptNode = PromptNode(self.hfModelName,api_key=self.hfAPIKey,default_prompt_template=promptTemplate)
 
         # Pipeline
-        sqlPipeline = Pipeline()
+        pricesPipeline = Pipeline()
 
         # Add Nodes to sqlPipeline
-        sqlPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Query"])
+        pricesPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Query"])
 
-        return sqlPipeline
+        return pricesPipeline
+
+# pricesPipeline = PricesNode().pipeline()
+# pricesDocumentStore = PricesNode().documentStore()
+
+# output = pricesPipeline.run(query="What can you say about gold prices in 2023",documents=pricesDocumentStore.get_all_documents())
+# answer = output["answers"][0].answer
+# print(answer)
