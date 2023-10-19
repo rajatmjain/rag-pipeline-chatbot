@@ -1,4 +1,4 @@
-from prices_node import PricesNode
+from goldPrices.pricesnode import PricesNode
 from haystack.pipelines import Pipeline
 
 class Prices:

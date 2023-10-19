@@ -1,6 +1,5 @@
 from haystack.agents import Tool
-from news_node import NewsNode
-from news import News
+from goldNews.news import News
 
 class NewsTool():
     def __init__(self) -> None:
@@ -8,7 +7,6 @@ class NewsTool():
 
     def tool():
         news = News()
-        newsDocumentStore = NewsNode().documentStore()
         newsPipeline = news.pipeline()
         newsTool = Tool(
             name="NewsTool",

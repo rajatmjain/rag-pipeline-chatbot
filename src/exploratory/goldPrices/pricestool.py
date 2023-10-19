@@ -1,6 +1,6 @@
 from haystack.agents import Tool
-from prices_node import PricesNode
-from prices import Prices
+from goldPrices.pricesnode import PricesNode
+from goldPrices.prices import Prices
 
 class PricesTool():
     def __init__(self) -> None:

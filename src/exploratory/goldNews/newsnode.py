@@ -1,7 +1,6 @@
 import os
-import yfinance as yf
-from haystack.nodes import LinkContentFetcher, BM25Retriever, AnswerParser, DensePassageRetriever, EmbeddingRetriever, PromptNode
-from haystack.document_stores import InMemoryDocumentStore, FAISSDocumentStore
+from haystack.nodes import AnswerParser, DensePassageRetriever, PromptNode
+from haystack.document_stores import FAISSDocumentStore
 from haystack.nodes.prompt import PromptTemplate
 from haystack import Pipeline
 from haystack.utils import print_answers
@@ -58,9 +57,9 @@ class NewsNode():
         return pipeline
 
 
-news = NewsNode()
-newsDocumentStore = news.documentStore()
-newsPipeline = news.pipeline()
-output = newsPipeline.run(query="Summarize the news for me",documents=newsDocumentStore.get_all_documents())
-answer = output["answers"][0].answer
-print(answer)   
+# news = NewsNode()
+# newsDocumentStore = news.documentStore()
+# newsPipeline = news.pipeline()
+# output = newsPipeline.run(query="Summarize the news for me",documents=newsDocumentStore.get_all_documents())
+# answer = output["answers"][0].answer
+# print(answer)   

@@ -1,0 +1,1 @@
+from goldNews import *

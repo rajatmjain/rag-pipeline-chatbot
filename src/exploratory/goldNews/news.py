@@ -1,4 +1,4 @@
-from news_node import NewsNode
+from goldNews.newsnode import NewsNode
 from haystack.pipelines import Pipeline
 
 class News():
@@ -8,4 +8,3 @@ class News():
 
     def pipeline(self) -> Pipeline :
         return NewsNode().pipeline()
-
