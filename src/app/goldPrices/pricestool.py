@@ -12,7 +12,7 @@ class PricesTool():
         pricesPipeline = prices.pipeline()
         pricesTool = Tool(
             name="PricesTool",
-            description="Tool to get insights from gold prices data",
+            description="This is a tool to provide real time gold prices and quantitative analysis on gold prices.",
             pipeline_or_node=pricesPipeline,
             output_variable="result", 
         )

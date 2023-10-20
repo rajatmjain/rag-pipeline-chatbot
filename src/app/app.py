@@ -1,11 +1,13 @@
 import chainlit as cl
+from goldbot_agent import GoldBotAgent
+
+
+agent = GoldBotAgent().agent()
+cl.HaystackAgentCallbackHandler(agent)
 
 @cl.on_message
 async def main(message: str):
     # Your custom logic goes here...
-    
-
+    response = await cl.make_async(agent.run)(message)
     # Send a response back to the user
-    await cl.Message(
-        content=message
-    ).send()
+    await cl.Message(author="GoldBot", content=response["answers"][0].answer).send()

@@ -30,7 +30,7 @@ class PricesNode:
     def pipeline(self) -> Pipeline:
         # Prompt Template
         promptTemplate = PromptTemplate(prompt = 
-                               """" You are an assistant getting data of prices of gold from documents. The table has the columns Date,Open,High,Low,Close,Volume. The dates are in the format "%Y-%m-%d" example: October 9 2023 is 2023-10-09.
+                               """" You are a pipeline for getting data of prices of gold from documents. The table has the columns Date,Open,High,Low,Close,Volume. The dates are in the format "%Y-%m-%d" example: October 9 2023 is 2023-10-09.
                                 Strictly answer the following query briefly based on the provided data from the documents and nothing else.
                                 If the context does not include an answer, reply with 'The data does not contain information related to the question'.\n
                                 Query: {query}\n
