@@ -31,7 +31,6 @@ def faissDocumentStore(docs):
         documentStore = FAISSDocumentStore.load(index_path="data/faiss/faiss_index") 
     
     else:
-
         documentStore = FAISSDocumentStore(sql_url="sqlite:///data/faiss/faiss_document_store.db",faiss_index_factory_str="Flat", return_embedding=True)
     
     documentStore.write_documents(docs)

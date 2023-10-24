@@ -61,3 +61,7 @@ class GoldBotAgent:
             "tool_names_with_descriptions": agent.tm.get_tool_names_with_descriptions(),
             "transcript": agent_step.transcript,
         }
+
+a = GoldBotAgent().agent()
+output = a.run(query="What was the opening price of gold on October 5 2023")
+print(output)

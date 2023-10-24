@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import sqlite3
-from haystack.nodes import PromptNode,PromptTemplate,AnswerParser
+from haystack.nodes import PromptNode,PromptTemplate,AnswerParser,TfidfRetriever, TableTextRetriever
 from haystack.document_stores import SQLDocumentStore
 from haystack.pipelines import Pipeline
 from haystack import Document
@@ -27,6 +27,15 @@ class PricesNode:
 
         return documentStore
     
+    # def retriever(self) -> TfidfRetriever:
+    #     tfidfRetriever = TfidfRetriever(
+    #         document_store=self.documentStore(),
+    #         top_k=5,
+    #         auto_fit=True
+    #     )
+    #     TableTextRetriever()
+    #     return tfidfRetriever
+    
     def pipeline(self) -> Pipeline:
         # Prompt Template
         promptTemplate = PromptTemplate(prompt = 
@@ -46,13 +55,14 @@ class PricesNode:
         pricesPipeline = Pipeline()
 
         # Add Nodes to sqlPipeline
-        pricesPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Query"])
+        pricesPipeline.add_node(component=self.retriever(),name="Retriever",inputs=["Query"])
+        pricesPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Retriever"])
 
         return pricesPipeline
 
 # pricesPipeline = PricesNode().pipeline()
 # pricesDocumentStore = PricesNode().documentStore()
 
-# output = pricesPipeline.run(query="What can you say about gold prices in 2023",documents=pricesDocumentStore.get_all_documents())
+# output = pricesPipeline.run(query="What was the closing price of gold on October 17 2023",documents=pricesDocumentStore.get_all_documents())
 # answer = output["answers"][0].answer
 # print(answer)

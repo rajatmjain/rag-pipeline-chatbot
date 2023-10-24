@@ -8,7 +8,6 @@ class PricesTool():
 
     def tool() -> Tool:
         prices = Prices()
-        pricesDocumentStore = PricesNode().documentStore()
         pricesPipeline = prices.pipeline()
         pricesTool = Tool(
             name="PricesTool",

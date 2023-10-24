@@ -171,9 +171,9 @@ cython_debug/
 *.json
 *.sqlite
 # Ignore everything in the products directory
-src/products/*
+logs/*
 
 # But do not ignore .gitkeep files
-!src/products/.gitkeep
+!logs/.gitkeep
 
 faiss
