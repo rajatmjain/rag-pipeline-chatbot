@@ -2,6 +2,7 @@ import os
 import yfinance as yf
 import pandas as pd
 import sqlite3
+from dateutil import parser
 
 def connectToDatabase(databasePath):
     return sqlite3.connect(databasePath)
@@ -11,7 +12,7 @@ def createYFinanceObject(tickerSymbol):
 
 def extractData(yFinanceObject, databaseConnection):
     tableNameQuery = "SELECT name FROM sqlite_master WHERE type='table';"
-    tableExists = "historic_prices" in pd.read_sql_query(tableNameQuery, databaseConnection)["name"].values
+    tableExists = "gold_prices" in pd.read_sql_query(tableNameQuery, databaseConnection)["name"].values
 
     if not tableExists:
         # If the table doesn't exist, get all historic data
@@ -19,7 +20,7 @@ def extractData(yFinanceObject, databaseConnection):
         historicData.to_csv("data/temp.csv")
     else:
         # Get the last date in the existing data
-        lastDateQuery = "SELECT MAX(Date) FROM historic_prices"
+        lastDateQuery = "SELECT MAX(Date) FROM gold_prices"
         lastDateStr = pd.read_sql_query(lastDateQuery, databaseConnection)["MAX(Date)"][0]
         lastDate = pd.to_datetime(lastDateStr)
 
@@ -36,7 +37,9 @@ def extractData(yFinanceObject, databaseConnection):
 def cleanDataAndSaveToDb(databaseConnection):
     df = pd.read_csv("data/temp.csv")
     df = df.drop(columns=["Dividends", "Stock Splits"])
-    df.to_sql("historic_prices", databaseConnection, if_exists="append", index=False)
+    df['Date'] = df['Date'].apply(lambda x: parser.parse(x).strftime('%Y-%m-%d'))
+    df.to_sql("gold_prices", databaseConnection, if_exists="append", index=False)
+
 
 def closeDatabaseConnection(databaseConnection):
     databaseConnection.close()
@@ -45,7 +48,7 @@ def deleteTempFile():
     os.remove("data/temp.csv")
 
 def main():
-    databasePath = "data/historic_prices.db"
+    databasePath = "data/database.db"
     tickerSymbol = "GC=F"
     conn = connectToDatabase(databasePath)
     yFinanceObject = createYFinanceObject(tickerSymbol)

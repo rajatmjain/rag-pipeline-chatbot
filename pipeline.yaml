@@ -1,5 +1,9 @@
 tasks:
-  - source: src/etl/extract.py
+  - source: src/etl/gold_prices_etl.py
     product:
-      nb: src/products/extract-pipeline.ipynb
-      data: data.duckdb
+      nb: logs/gold_prices_etl.ipynb
+  
+  - source: src/etl/gold_news_etl.py
+    product:
+      nb: logs/gold_news_etl.ipynb
+  

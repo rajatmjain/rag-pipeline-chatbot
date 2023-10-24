@@ -57,10 +57,10 @@ def generateLast52WeeksPlot(df, outputPath):
     plt.clf()
 
 def main():
-    databasePath = "data/historic_prices.db"
-    tableName = "historic_prices"
-    outputPathWeekly = "src/products/weekly_plot.png"
-    outputPathLast52Weeks = "src/products/last_52_weeks_plot.png"
+    databasePath = "data/database.db"
+    tableName = "gold_prices"
+    outputPathWeekly = "public/weekly_plot.png"
+    outputPathLast52Weeks = "public/last_52_weeks_plot.png"
 
     conn = connectToDatabase(databasePath)
     df = fetchDataFromDatabase(conn, tableName)
