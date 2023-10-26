@@ -33,8 +33,6 @@ class GoldBotAgent:
                         If the AI Agent cannot find a specific answer after exhausting available tools and approaches, it answers with Final Answer: inconclusive
 
                         Question: {query}
-                        Thought:
-                        {transcript}
                         """
 
         promptTemplate = PromptTemplate(
@@ -63,5 +61,5 @@ class GoldBotAgent:
         }
 
 a = GoldBotAgent().agent()
-output = a.run(query="What was the opening price of gold on October 5 2023")
-print(output)
+output = a.run(query="What was the opening price of gold on October 26, 2023")
+print(output["answers"][0].answer)
