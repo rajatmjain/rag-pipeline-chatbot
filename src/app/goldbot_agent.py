@@ -4,7 +4,9 @@ from haystack.agents.base import ToolsManager
 from haystack.nodes import PromptTemplate,PromptNode
 from goldNews.newstool import NewsTool
 from goldPrices.pricestool import PricesTool
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class GoldBotAgent:
     

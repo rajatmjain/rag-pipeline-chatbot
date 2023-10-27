@@ -1,127 +1,78 @@
 import os
 import pandas as pd
 import sqlite3
-from haystack.nodes import PromptNode,PromptTemplate,AnswerParser, MultiModalRetriever, BM25Retriever, TfidfRetriever
-from haystack.document_stores import SQLDocumentStore, InMemoryDocumentStore
-from haystack.pipelines import Pipeline
-from haystack import Document
+from haystack.nodes import PromptNode,PromptTemplate
 from sympy import true
+from dotenv import load_dotenv
+from haystack.nodes.base import BaseComponent
+from haystack.agents import Agent, Tool
+load_dotenv()
 
+class PricesNode(BaseComponent):
+    outgoing_edges = 1
 
-class PricesNode:
-
-    def __init__(self) -> None:
+    def __init__(self,db_path: str) -> None:
+        self.conn = sqlite3.connect(db_path)
+    
+    def run(self, query: str):
+        try:
+            df = pd.read_sql_query(query, self.conn)
+            output = {
+                "results": f"{df}",
+                "query": query,
+            }
+            return output
+        except Exception as e:
+            output = {
+                "results": str(e),
+                "query": query,
+            }
+            return output
+        
+    
+    def run_batch(self):
+         pass
+    
+class PriceAgent():
+    def __init__(self):
         self.hfAPIKey = os.getenv("HF_API_KEY")
         self.hfModelName = os.getenv("HF_MODEL_NAME")
 
-    # def documentStore(self) -> SQLDocumentStore:
-    #     documentStore = SQLDocumentStore(url="sqlite:///data/database.db")
-    #     conn = sqlite3.connect("data/database.db")
-    #     df = pd.read_sql_query("SELECT * from gold_prices", conn)
-
-    #     docs = []
-
-    #     for index, row in df.iterrows():
-    #         # Create a string in key-value format
-    #         row_string = f"Date: {row['Date']} Open: {row['Open']} High: {row['High']} Low: {row['Low']} Close: {row['Close']} Volume: {row['Volume']}"
-
-    #         # Create a Document for each row
-    #         doc = Document(
-    #             content=row_string,
-    #             content_type="text",
-    #             meta={},
-    #         )
-
-    #         docs.append(doc)
-
-    #     # Write the Documents to the DocumentStore
-    #     documentStore.write_documents(documents=docs)
-
-    #     return documentStore
-
-    # def retriever(self) -> SQLRetriever:
-    #     retriever = SQLRetriever(document_store=self.documentStore())
-    #     return retriever
-
-    # def documentStore(self) -> InMemoryDocumentStore:
-    #     documentStore = InMemoryDocumentStore(use_bm25=True)
-    #     conn = sqlite3.connect("data/database.db")
-    #     df = pd.read_sql_query("SELECT * from gold_prices", conn)
-
-    #     docs = []
-
-    #     for index, row in df.iterrows():
-    #         # Create a string in key-value format
-    #         row_string = f"On {row['Date']} the opening price was ${row['Open']}, the high was ${row['High']}, the low was ${row['Low']}, the closing was ${row['Close']} and the volume was {row['Volume']}"
-
-    #         # Create a Document for each row
-    #         doc = Document(
-    #             content=row_string,
-    #             content_type="text",
-    #             meta={},
-    #         )
-
-    #         docs.append(doc)
-
-    #     # Write the Documents to the DocumentStore
-    #     documentStore.write_documents(documents=docs)
-
-    #     return documentStore
-    
-    def documentStore(self) -> InMemoryDocumentStore:
-        documentStore = InMemoryDocumentStore()
-        conn = sqlite3.connect("data/database.db")
-        df = pd.read_sql_query("SELECT * from gold_prices", conn)
-
-        rows_summary = []
-
-        for index, row in df.iterrows():
-            # Create a sentence summarizing each row
-            row_summary = f"On {row['Date']}, the opening price was ${row['Open']}, the high was ${row['High']}, the low was ${row['Low']}, the closing was ${row['Close']}, and the volume was {row['Volume']}."
-            rows_summary.append(row_summary)
-
-        # Create a single long document with all the row summaries
-        long_document = Document(
-            content=" ".join(rows_summary),
-            content_type="text",
-            meta={},
+    def agent(self) -> Agent:
+        # Prompt Template
+        sql_agent_prompt = PromptTemplate(
+            prompt="You are a helpful and knowledgeable agent who has access to an SQL database which has a table called 'gold_prices'"
+                        " that has the following Columns: Date;Open;High;Low;Close;Volume"
+                        "Your task is to assess whether a query can be resolved with the tools you have at hand, and if yes, generate an SQL query to resolve it."
+                        "The generated SQL query should be stripped down to just the query with no syntax highlighting."
+                        "You have access to the following tools:\n\n"
+                        "{tool_names_with_descriptions}\n\n"
+                        "To answer questions, you'll need to go through multiple steps involving step-by-step thinking and "
+                        "selecting appropriate tools and their inputs; tools will respond with observations."
+                        "When you are ready with an answer, respond with the `Final Answer:`\n\n"
+                        "If the query is unrelated and cannot be answered by any of the tools, your final answer should say 'Cannot be answered with available databases'\n\n"
+                        "Use the following format:\n\n"
+                        "Question: the question to be answered\n"
+                        "Thought: Reason if you have the final answer. If yes, answer the query. If not, continue using the tools to resolve the query.\n"
+                        "Tool: pick one of {tool_names} \n"
+                        "Tool Input: the input for the tool.\n"
+                        "Observation: The full result the tool responds with\n"
+                        "...\n"
+                        "Final Answer: the final answer to the query. This should be the full result of the SQL query that you came up with.\n\n"
+                        "Thought, Tool, Tool Input, and Observation steps can be repeated multiple times, but sometimes we can find an answer in the first pass\n"
+                        "---\n\n"
+                        "Question: {query}\n"
+                        "Thought: Let's think step-by-step, I first need to\n"
+                        "{transcript}",
         )
 
-        # Write the long document to the DocumentStore
-        documentStore.write_documents(documents=[long_document])
-        return documentStore
+        prompt_node = PromptNode(model_name_or_path=self.hfModelName, api_key=self.hfAPIKey, stop_words=["Observation:"], max_length=1000)
+        agent = Agent(prompt_node=prompt_node, prompt_template=sql_agent_prompt)
+        return agent
 
 
-    def retriever(self) -> TfidfRetriever:
-        documentStore = self.documentStore()
-        retriever = TfidfRetriever(document_store=documentStore,top_k=3,auto_fit=true)
-        return retriever
-    
-    def pipeline(self) -> Pipeline:
-        # Prompt Template
-        promptTemplate = PromptTemplate(prompt = 
-                               """" You are a pipeline for getting data of prices of gold from a document. The document has sentences having information example: On 2023-10-24, the opening price was $1970.300048828125, the high was $1975.0, the low was $1970.300048828125, the closing was $1975.0, and the volume was 10.
-                                Strictly answer the following query briefly based on the provided data from the document and nothing else.
-                                If the context does not include an answer, reply with 'The data does not contain information related to the question'.\n
-                                Query: {query}\n
-                                Answer: 
-                                """,
-                                output_parser=AnswerParser())
-
-        # Prompt Node initialization
-        promptNode = PromptNode(self.hfModelName,api_key=self.hfAPIKey,default_prompt_template=promptTemplate)
-
-        # Pipeline
-        pricesPipeline = Pipeline()
-
-        # Add Nodes to sqlPipeline
-        pricesPipeline.add_node(component=self.retriever(),name="Retriever",inputs=["Query"])
-        pricesPipeline.add_node(component=promptNode, name="PromptNode", inputs=["Retriever"])
-
-        return pricesPipeline
-
-pricesPipeline = PricesNode().pipeline()
-
-output = pricesPipeline.run(query="What was the opening price of gold on October 26, 2023")
-answer = output["answers"][0].answer
-print(answer)
+query_node = PricesNode(db_path="data/database.db")
+agent = PriceAgent().agent()
+sql_query_tool =  Tool(name="SQLQuery", pipeline_or_node=query_node, description="""This tool is useful for consuming SQL queries and responds with the result""")
+agent.add_tool(sql_query_tool)
+agent.run("What was the opening price of gold on October 26, 2023")
