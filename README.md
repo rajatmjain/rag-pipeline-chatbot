@@ -30,6 +30,8 @@ To achieve the project's goals, we will focus on implementing the RAG (Retrieval
 
 The user interface for our chatbot will be developed using Chainlit. Chainlit offers a user-friendly and interactive interface that allows users to interact with the chatbot seamlessly. It will provide an intuitive way for users to inquire about gold prices, investment advice, and educational content related to gold as an investment.
 
+![Interface](./images/Interface.png)
+
 ## System Design
 
 ![SystemDesign](./images/SystemDesign.png)
