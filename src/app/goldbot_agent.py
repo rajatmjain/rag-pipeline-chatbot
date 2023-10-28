@@ -1,3 +1,4 @@
+import datetime
 import os
 from haystack.agents import Agent
 from haystack.agents.base import ToolsManager
@@ -5,7 +6,6 @@ from haystack.nodes import PromptTemplate,PromptNode
 from goldNews.newstool import NewsTool
 from goldPrices.pricestool import PricesTool
 from dotenv import load_dotenv
-
 load_dotenv()
 
 class GoldBotAgent:
@@ -16,8 +16,10 @@ class GoldBotAgent:
         
     def agent(self) -> Agent:
 
+        # Prompt Template Preparation
+        todaysDate = f"Today's date is {datetime.date.today().strftime('%Y-%m-%d')}\n"
         agentPrompt = """
-                        In the following conversation, a human user interacts with an AI Agent. The human user poses questions, and the AI Agent goes through several steps to provide well-informed answers.
+                        In the following conversation, a human user interacts with an AI Agent. The human user poses questions, and the AI Agent goes through several steps to provide well-informed answers.  
                         The AI Agent must use the available tools to find the up-to-date information. The final answer to the question should be truthfully based solely on the output of the tools. The AI Agent should ignore its knowledge of the price of gold and current news about when answering the questions. Although it can teach simple concepts about gold and gold investment to it's users.
                         The AI Agent has access to these tools:
                         {tool_names_with_descriptions}
@@ -35,17 +37,18 @@ class GoldBotAgent:
                         If the AI Agent cannot find a specific answer after exhausting available tools and approaches, it answers with Final Answer: inconclusive
 
                         Question: {query}
-                        """
-
-        promptTemplate = PromptTemplate(
-            prompt= agentPrompt
-            )
+                    """
+        prompt = todaysDate + agentPrompt
+        promptTemplate = PromptTemplate(prompt=prompt)
         
+        # Prompt Node Definition
         promptNode = PromptNode(model_name_or_path=self.hfModelName,api_key=self.hfAPIKey)
 
-        pricesTool = PricesTool.tool()
+        # Tools Definition
+        pricesTool = PricesTool().tool()
         newsTool = NewsTool.tool()
 
+        # Agent Definition
         goldBotAgent = Agent(
             prompt_node=promptNode,
             prompt_template=promptTemplate,
@@ -55,13 +58,10 @@ class GoldBotAgent:
 
         return goldBotAgent
 
+    # Function to resolve paramaters
     def resolverFunction(self,query, agent, agent_step):
         return {
             "query": query,
             "tool_names_with_descriptions": agent.tm.get_tool_names_with_descriptions(),
             "transcript": agent_step.transcript,
         }
-
-a = GoldBotAgent().agent()
-output = a.run(query="What was the opening price of gold on October 26, 2023")
-print(output["answers"][0].answer)
