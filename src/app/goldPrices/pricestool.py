@@ -6,13 +6,12 @@ class PricesTool():
     def __init__(self) -> None:
         pass
 
-    def tool() -> Tool:
+    def tool(self) -> Tool:
         prices = Prices()
-        pricesPipeline = prices.pipeline()
-        pricesTool = Tool(
-            name="PricesTool",
-            description="This is a tool to provide real time gold prices and quantitative analysis on gold prices.",
-            pipeline_or_node=pricesPipeline,
-            output_variable="result", 
-        )
+        pricesNode = prices.node()
+        pricesTool = Tool(name="PricesTool", 
+                          pipeline_or_node=pricesNode, 
+                          description="""This tool is useful for consuming SQL queries and responds with the result. This tool has access to who has access to an SQL database which has a table called 'gold_prices'
+                        that has the following Columns: Date;Open;High;Low;Close;Volume """) 
+        
         return pricesTool
