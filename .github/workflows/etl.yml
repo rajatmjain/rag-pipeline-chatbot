@@ -9,9 +9,9 @@ jobs:
 
     steps:
       - name: Run prices ETL
-        run: python src/app/etl/gold_news_etl.py
+        run: python src/etl/gold_news_etl.py
     
     
       - name: Run news ETL
-        run: python src/app/etl/gold_news_etl.py
+        run: python src/etl/gold_news_etl.py
   
