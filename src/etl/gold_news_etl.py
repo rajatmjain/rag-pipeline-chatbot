@@ -49,7 +49,7 @@ def faissDocumentStore(docs):
                 document_store=documentStore,
                 query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
                 passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
-                use_gpu=True,
+                use_gpu=False,
                 embed_title=True,
     )
 
