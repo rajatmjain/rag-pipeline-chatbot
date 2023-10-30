@@ -24,12 +24,10 @@ jobs:
       - name: Install project dependencies
         run: |
           poetry install
-        working-directory: rag-pipeline-chatbot
 
       - name: Run Prices ETL
         run: poetry run python src/etl/gold_prices_etl.py
-        working-directory: rag-pipeline-chatbot
 
       - name: Run News ETL
         run: poetry run python src/etl/gold_news_etl.py
-        working-directory: rag-pipeline-chatbot
+
