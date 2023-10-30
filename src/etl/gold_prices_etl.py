@@ -12,6 +12,7 @@ from dateutil import parser
 
 # +
 def connectToDatabase(databasePath):
+    os.makedirs(os.path.dirname(databasePath), exist_ok=True)
     return sqlite3.connect(databasePath)
 
 # +
