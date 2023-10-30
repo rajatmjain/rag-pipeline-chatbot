@@ -53,7 +53,7 @@ class GoldBotAgent:
             prompt_node=promptNode,
             prompt_template=promptTemplate,
             prompt_parameters_resolver=self.resolverFunction,
-            tools_manager= ToolsManager(tools=[pricesTool,newsTool])
+            tools_manager= ToolsManager(tools=[pricesTool, newsTool])
         )
 
         return goldBotAgent

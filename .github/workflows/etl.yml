@@ -1,0 +1,17 @@
+name: ETL Pipelines
+on: [push]
+  # schedule:
+  #   - cron: '0 11 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run prices ETL
+        run: python src/app/etl/gold_news_etl.py
+    
+    
+      - name: Run news ETL
+        run: python src/app/etl/gold_news_etl.py
+  

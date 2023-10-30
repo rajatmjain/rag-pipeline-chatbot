@@ -13,4 +13,3 @@ async def main(message: cl.Message):
     answer = response["answers"][0].answer
     # Send a response back to the user
     await cl.Message(author="GoldBot", content=answer).send()
-

@@ -1,20 +1,29 @@
+# + tags=["parameters"]
+# declare a list tasks whose products you want to use as inputs
+upstream = None
+
+
+# +
 import os
 import yfinance as yf
 from haystack.document_stores import FAISSDocumentStore
 from haystack.nodes import LinkContentFetcher,DensePassageRetriever
-  
+
+# +
 def newsRetriever():
     gold = yf.Ticker("GC=F")
     news = gold.news
     return news
 
+# +
 def linkRetriever(news):
     links = []
 
     for new in news:
         links.append(new["link"])
         return links
-    
+
+# +
 def linkContentFetcher(links):
     lcf = LinkContentFetcher()
     docs = []
@@ -23,7 +32,8 @@ def linkContentFetcher(links):
         docs.append(lcf.fetch(link)[0])
         
     return docs
-    
+
+# +
 def faissDocumentStore(docs):
     documentStore : FAISSDocumentStore
 
@@ -48,11 +58,15 @@ def faissDocumentStore(docs):
 
     return documentStore
 
+# +
 def main():
     goldNews = newsRetriever()
     newsLinks = linkRetriever(goldNews)
     content = linkContentFetcher(newsLinks)
     faissDocumentStore(content)
+
+
+# -
 
 if __name__ == "__main__":
     main()

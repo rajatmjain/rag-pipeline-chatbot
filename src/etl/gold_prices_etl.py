@@ -1,15 +1,24 @@
+# + tags=["parameters"]
+# declare a list tasks whose products you want to use as inputs
+upstream = None
+
+
+# +
 import os
 import yfinance as yf
 import pandas as pd
 import sqlite3
 from dateutil import parser
 
+# +
 def connectToDatabase(databasePath):
     return sqlite3.connect(databasePath)
 
+# +
 def createYFinanceObject(tickerSymbol):
     return yf.Ticker(tickerSymbol)
 
+# +
 def extractData(yFinanceObject, databaseConnection):
     tableNameQuery = "SELECT name FROM sqlite_master WHERE type='table';"
     tableExists = "gold_prices" in pd.read_sql_query(tableNameQuery, databaseConnection)["name"].values
@@ -34,6 +43,9 @@ def extractData(yFinanceObject, databaseConnection):
         newData = yFinanceObject.history(start=offsetDateStr)
         newData.to_csv("data/temp.csv")
 
+
+# -
+
 def cleanDataAndSaveToDb(databaseConnection):
     df = pd.read_csv("data/temp.csv")
     df = df.drop(columns=["Dividends", "Stock Splits"])
@@ -41,12 +53,15 @@ def cleanDataAndSaveToDb(databaseConnection):
     df.to_sql("gold_prices", databaseConnection, if_exists="append", index=False)
 
 
+# +
 def closeDatabaseConnection(databaseConnection):
     databaseConnection.close()
 
+# +
 def deleteTempFile():
     os.remove("data/temp.csv")
 
+# +
 def main():
     databasePath = "data/database.db"
     tickerSymbol = "GC=F"
@@ -57,6 +72,9 @@ def main():
     cleanDataAndSaveToDb(conn)
     closeDatabaseConnection(conn)
     deleteTempFile()
+
+
+# -
 
 if __name__ == "__main__":
     main()
