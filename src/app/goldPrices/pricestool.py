@@ -11,7 +11,7 @@ class PricesTool():
         pricesNode = prices.node()
         pricesTool = Tool(name="PricesTool", 
                           pipeline_or_node=pricesNode, 
-                          description="""This tool is useful for consuming SQL queries and responds with the result. This tool has access to who has access to an SQL database which has a table called 'gold_prices'
-                        that has the following Columns: Date;Open;High;Low;Close;Volume """) 
+                          description="""This tool is useful for consuming SQL queries and responds with the result. This tool has access to an SQL database which has a table called 'gold_prices'
+                        that has the following Columns: Date;Open;High;Low;Close;Volume""") 
         
         return pricesTool

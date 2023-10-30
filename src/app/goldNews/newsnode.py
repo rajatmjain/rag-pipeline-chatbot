@@ -16,7 +16,8 @@ class NewsNode():
         return FAISSDocumentStore.load(index_path="data/faiss/faiss_index")
 
       
-    def retriever(self,documentStore) -> DensePassageRetriever:
+    def retriever(self) -> DensePassageRetriever:
+        documentStore = self.documentStore()
         retriever = DensePassageRetriever(
                         document_store=documentStore,
                         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
@@ -24,10 +25,6 @@ class NewsNode():
                         use_gpu=True,
                         embed_title=True,
         )
-
-        documentStore.update_embeddings(retriever)
-
-        documentStore.save("data/faiss/faiss_index")
 
         return retriever
     
@@ -37,7 +34,6 @@ class NewsNode():
                                 Strictly answer the following query briefly based on the provided news from the documents and nothing else.
                                 If the context does not include an answer, reply with 'The data does not contain information related to the question'.\n
                                 Query: {query}\n
-                                Documents: {documents}\n
                                 Answer: 
                                 """,
                                 output_parser=AnswerParser(),
@@ -51,15 +47,7 @@ class NewsNode():
     def pipeline(self) -> Pipeline:
         # Pipeline
         pipeline = Pipeline()
-        pipeline.add_node(component=self.retriever(self.documentStore()), name="retriever", inputs=["Query"])
-        pipeline.add_node(component=self.promptNode(), name="promptNode", inputs=["retriever"])  
+        pipeline.add_node(component=self.retriever(), name="Retriever", inputs=["Query"])
+        pipeline.add_node(component=self.promptNode(), name="PromptNode", inputs=["Retriever"])  
 
         return pipeline
-
-
-# news = NewsNode()
-# newsDocumentStore = news.documentStore()
-# newsPipeline = news.pipeline()
-# output = newsPipeline.run(query="Summarize the news for me",documents=newsDocumentStore.get_all_documents())
-# answer = output["answers"][0].answer
-# print(answer)   

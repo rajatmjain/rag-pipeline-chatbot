@@ -10,8 +10,7 @@ class NewsTool():
         newsPipeline = news.pipeline()
         newsTool = Tool(
             name="NewsTool",
-            description="Tool to get insights from gold news",
-            pipeline_or_node=newsPipeline,
-            output_variable="result", 
+            description="This tool is useful for analyzing news for the commodity gold and responds with insights from the news. This tool has access to a vector database which has embeddings of documents of news articles.",
+            pipeline_or_node=newsPipeline
         )
         return newsTool

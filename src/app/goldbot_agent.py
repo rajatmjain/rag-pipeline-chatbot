@@ -64,3 +64,4 @@ class GoldBotAgent:
             "query": query,
             "tool_names_with_descriptions": agent.tm.get_tool_names_with_descriptions(),
             "transcript": agent_step.transcript,
+        }
