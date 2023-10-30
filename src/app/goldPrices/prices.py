@@ -1,10 +1,9 @@
 from goldPrices.pricesnode import PricesNode
-from haystack.pipelines import Pipeline
 
 class Prices:
 
     def __init__(self) -> None:
         pass
 
-    def pipeline(self) -> Pipeline:
-        return PricesNode().pipeline()
+    def node(self) -> PricesNode:
+        return PricesNode(db_path="data/database.db")
