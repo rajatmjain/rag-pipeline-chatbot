@@ -20,7 +20,7 @@ class GoldBotAgent:
         todaysDate = f"Today's date is {datetime.date.today().strftime('%Y-%m-%d')}\n"
         agentPrompt = """
                         In the following conversation, a human user interacts with an AI Agent. The human user poses questions, and the AI Agent goes through several steps to provide well-informed answers.  
-                        The AI Agent must use the available tools to find the up-to-date information. The final answer to the question should be truthfully based solely on the output of the tools. The AI Agent should ignore its knowledge of the price of gold and current news about when answering the questions. Although it can teach simple concepts about gold and gold investment to it's users.
+                        The AI Agent must use the available tools to find the up-to-date information. The final answer to the question should be truthfully based solely on the output of the tools. The AI Agent should ignore its knowledge of the price of gold and current news about when answering the questions. Although it can teach simple concepts about gold and gold investment to it's users in 1 sentence.
                         The AI Agent has access to these tools:
                         {tool_names_with_descriptions}
 
