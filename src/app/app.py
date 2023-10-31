@@ -1,4 +1,3 @@
-from urllib import response
 import chainlit as cl
 from goldbot_agent import GoldBotAgent
 
