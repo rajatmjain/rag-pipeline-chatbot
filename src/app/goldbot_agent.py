@@ -34,9 +34,10 @@ class GoldBotAgent:
                         When selecting a tool, the AI Agent must provide both the "Tool:" and "Tool Input:" pair in the same response, but on separate lines.
 
                         The AI Agent should not ask the human user for additional information, clarification, or context.
-                        If the AI Agent cannot find a specific answer after exhausting available tools and approaches, it answers with Final Answer: inconclusive
+                        If the AI Agent cannot find a specific answer after exhausting available tools and approaches, it answers with Final Answer: I'm not able to answer this question as of now.
 
                         Question: {query}
+                        Transcript : {transcript}
                     """
         prompt = todaysDate + agentPrompt
         promptTemplate = PromptTemplate(prompt=prompt)

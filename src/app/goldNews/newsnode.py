@@ -22,10 +22,10 @@ class NewsNode():
                         document_store=documentStore,
                         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
                         passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
-                        use_gpu=True,
+                        use_gpu=False,
                         embed_title=True,
-        )
-
+                        )
+        
         return retriever
     
     def promptNode(self) -> PromptNode:
@@ -35,9 +35,7 @@ class NewsNode():
                                 If the context does not include an answer, reply with 'The data does not contain information related to the question'.\n
                                 Query: {query}\n
                                 Answer: 
-                                """,
-                                output_parser=AnswerParser(),
-                                )
+                                """)
         
         # Prompt Node initialization
         promptNode = PromptNode(self.hfModelName,api_key=self.hfAPIKey,default_prompt_template = promptTemplate)
