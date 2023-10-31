@@ -7,10 +7,14 @@ agent = GoldBotAgent().agent()
 cl.HaystackAgentCallbackHandler(agent)
 
 @cl.on_message
-async def main(message: cl.Message):
+async def main(message: str):
     # Your custom logic goes here...
-    response = await cl.make_async(agent.run)(message)
+    response = await getAnswer(query=message)
     answer = response["answers"][0].answer
     # Send a response back to the user
     await cl.Message(author="GoldBot", content=answer).send()
+
+async def getAnswer(query:str):
+    answer = agent.run(query=query)
+    return answer
 
