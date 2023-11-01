@@ -1,60 +1,42 @@
-# Hacktoberfest 2023 project: building ETL and RAG pipelines with open source 
+# Hacktoberfest 2023 project: GoldBot (The Gold Price Chatbot with Investment Insights)
 
-## Set up /  Configuración
+## Theme of your project
 
-There should be one GitHub repository per team. /  Debería haber un repositorio de GitHub por equipo.
+Retrieval Augmented Generation (RAG) pipeline for chatbot
 
-**Ensure all team members have completed all steps in the [set up](setup.md) document.**
+## Description
 
-**Asegúrate de que todos los miembros del equipo hayan completado todos los pasos en el [documento de configuración](setup-espanol.md).**
+GoldBot is a conversational AI system designed to provide users with information about gold prices and valuable insights into factors affecting gold prices. The chatbot will offer educational content and explanations, making it a comprehensive resource for users interested in gold as an investment.
 
-## Theme of your project / Tema de tu proyecto
+This project is dedicated to building a Retrieval Augmented Generation (RAG) pipeline for the Gold Price Chatbot with Investment Insights. The primary goal is to enhance the chatbot's capability to provide users with accurate and informative responses related to gold prices and investment insights.
 
-1. Extract Transform Load (ETL) pipeline with an analytics component / Pipeline de Extracción, Transformación y Carga (ETL) con un componente analítico
-2. Extract Transform Load (ETL) pipeline with a machine learning (ML) component  / Pipeline de Extracción, Transformación y Carga (ETL) con un componente de aprendizaje automático (ML)
-3. Retrieval Augmented Generation (RAG) pipeline for question answering /  Pipeline de Generación Aumentada por Recuperación (RAG) para responder preguntas
-4. Retrieval Augmented Generation (RAG) pipeline for chatbot /  Pipeline de Generación Aumentada por Recuperación (RAG) para chatbot
+## Data sources
 
-## Description / Descripción 
+We will exclusively utilize open-source data sources for this project. Our primary data source will be Yahoo Finance. This data will serve as the foundation for our chatbot's knowledge base, enabling it to provide accurate and up-to-date information about gold prices and related factors.
 
-Provide a description of your project. Include the data sources you are using, the tools you are using, and the expected outcome of your project.
+## Methods
 
-Proporcione una descripción de su proyecto. Incluya las fuentes de datos que está utilizando, las herramientas que está utilizando y el resultado esperado de su proyecto.
+To achieve the project's goals, we will focus on implementing the RAG (Retrieval Augmented Generation) pipeline. The tools we will use include Python, SQLite and FAISS Vector DB for data storage, Haystack for orchestration, and Chainlit for building the user interface. The RAG pipeline will enhance the chatbot's ability to retrieve relevant information and generate insightful responses to user queries.
 
-## Data sources / Fuentes de datos
+- **ETL Pipeline**: GoldBot sources and processes both historical gold price data and current textual news about gold from Yahoo Finance daily, ensuring data consistency.
 
-Provide a detailed description of your data sources. Please ensure you work only with open source data. Include a link to the data you are working with. 
+- **RAG Pipeline with Haystack**: The RAG (Retrieval Augmented Generation) pipeline powered by Haystack handles queries using language models and retrievers.
 
-Agregue una descripción detallada de sus fuentes de datos. Asegúrese de trabajar solo con datos de código abierto. Incluya un enlace a los datos con los que está trabajando.
+- **Haystack Agent**: An agent orchestrates tools based on user queries, choosing between price-related and news-related information.
 
-**Do not upload data to GitHub** / **No suba datos a GitHub**
+- **Chainlit Chatbot Interface**: Users interact with the Haystack agent for answers.
 
-## Methods / Métodos
+## User interface
 
-Describe the methods you are using. Include a description of the tools you are using.
+The user interface for our chatbot will be developed using Chainlit. Chainlit offers a user-friendly and interactive interface that allows users to interact with the chatbot seamlessly. It will provide an intuitive way for users to inquire about gold prices, investment advice, and educational content related to gold as an investment.
 
-Describa los métodos que está utilizando. Incluya una descripción de las herramientas que está utilizando.
+![Interface](./images/Interface.png)
 
-## User interface your project will have / Interfaz de usuario que tendrá su proyecto
+## System Design
 
-Describe the user interface your project will have. Include a description of the tools you are using.
+![SystemDesign](./images/SystemDesign.png)
 
-Options: 
+## Team members
 
-1. FastAPI application
-2. Chainlit application
-3. Voila dashboard
-
-Describa la interfaz de usuario que tendrá su proyecto. Incluya una descripción de las herramientas que está utilizando.
-
-Opciones:
-
-1. Aplicación FastAPI
-2. Aplicación Chainlit
-3. Tablero Voila
-
-## Team members/ Miembros del equipo
-
-Add the names and GitHub IDs of your team members here.
-
-Agregue los nombres y las ID de GitHub de los miembros de su equipo aquí.
+1. Rajat Jain [![GitHub](https://img.shields.io/badge/GitHub-rajatmjain-blue?logo=github)](https://github.com/rajatmjain)
+2. Roshawn Brooks [![GitHub](https://img.shields.io/badge/GitHub-rbrooks95-blue?logo=github)](https://github.com/rbrooks95)
